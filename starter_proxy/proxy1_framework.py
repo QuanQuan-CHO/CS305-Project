@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/example')
 def simple():
-    return Response(request.get('http://www.example.com'))
+    return Response(request.urlopen('http://www.example.com'))
 
 
 def modify_request(message):
