@@ -1,4 +1,4 @@
-from flask import Flask, Response,Request
+from flask import Flask, Response, Request
 import sys
 from gevent import pywsgi
 import time
@@ -7,8 +7,9 @@ from util import strip_comments
 
 app = Flask(__name__)
 app.debug = True
-servers=[]
+servers = []
 current_pos = 0
+
 
 @app.route('/')
 def find_port():
@@ -17,6 +18,7 @@ def find_port():
     if current_pos == servers.__len__():
         current_pos = 0
     return str(ret)
+
 
 if __name__ == '__main__':
     with open(sys.argv[1]) as file:
