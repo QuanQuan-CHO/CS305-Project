@@ -1,101 +1,61 @@
-import math
-from multiprocessing.dummy import active_children
-import socket
+import re
 import sys
-import threading
 import time
-from threading import Thread
 
-from dns.query import udp
-from dns import *
-import dns
-import argparse
+import requests
+from flask import Flask, Response
+from gevent import pywsgi
 
-"""
-This framework is just a reference for beginning. Feel free to change it!
-Have a good luck!
-"""
+app = Flask(__name__)
+app.debug = True
+default_port = None
+throughput = 0
+bit_rates = [1000, 500, 100, 10]
 
-def recv(s):
-    """
-    recevie the request passed to proxy.
-    """
+@app.route('/<name>')
+def index(name = None):
+    if name == None:
+        return 'Hello World'
+    return Response(requests.get('http://127.0.0.1:8080/%s' % name))
 
-def send(s):
-    """
-    send the response here.
-    """  
-
-def exit():
-    """
-    you should provide a way to exit your proxy well.
-    """
-
-def accept(PORT):
-    """
-    you should bind the ip of your socket to 0.0.0.0 to make the proxy work well
-    """
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("0.0.0.0", PORT))
-
-
-def modify_request(message):
-    """
-    Here you should change the requested bit rate according to your computation of throughput.
-    And if the request is for big_buck_bunny.f4m, you should instead request big_buck_bunny_nolist.f4m 
-    for client and leave big_buck_bunny.f4m for the use in proxy.
-    """
+@app.route('/vod/<name>')
+def flash(name = None):
+    global throughput
+    bit_rate = 0
+    if name == 'big_buck_bunny.f4m':
+        name = '10.f4m'
+    else:
+        real_name = re.match('\d*(Seg.*)', name).group(1)
+        for bit_rate in bit_rates:
+            if bit_rate * 1.5 <= throughput:
+                break
+        name = str(bit_rate) + real_name
+        print(name)
+    
+    port = int(request_dns())
+    start = time.time()
+    res = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name))
+    end = time.time()
+    current_T = res.content.__len__() / (end - start)
+    throughput = alpha * throughput + (1 - alpha) * current_T
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),  ' ', end - start, " ", current_T, " ", throughput, " ",
+        bit_rate, " ", port, " ", name)
+    return Response(res)
 
 def request_dns():
-    """
-    Request dns server here. Specify the domain name as you want.
-    """
-    query = message.make_query("xxx", dns.rdatatype.A,
-                                        dns.rdataclass.IN)
-
-def calculate_throughput():
-    """
-    Calculate throughput here.
-    """
-
-
-class Proxy():
-    """
-    The class is used to manage connections from clients.
-    """
-    def __init__(self):
-        self.connection = None
-        self.send_buffer = None
-        self.receive_buffer = None
-        """
-        Add field as you want
-        """
-
-
-class Connection():
-    def __init__(self, conn, address):
-        self.conn = conn
-        self.address = address
-        """
-        Add field as you want
-        """
-    
-
+    global default_port
+    if default_port != None:
+        return default_port
+    return int(requests.get('http://127.0.0.1:%d/' % dns_port).content)
 
 if __name__ == '__main__':
-   
-    """
-    Parse command varibles first.
-    """
-    parser = argparse.ArgumentParser(description='start proxying......')
-    parser.add_argument('-p', '--port', required=True,
-                            help='listening port for proxy.')
-    args = parser.parse_args()
-
-    """
-    Start your proxy.
-    """
-
-    accept(args.port)
-    
-
+    argc = sys.argv.__len__()
+    assert argc == 5 or argc == 6
+    if argc == 6:
+        default_port = sys.argv[5]
+    log_file = sys.argv[1]
+    alpha = float(sys.argv[2])
+    listen_port = int(sys.argv[3])
+    dns_port = int(sys.argv[4])
+    server = pywsgi.WSGIServer(('0.0.0.0', listen_port), app)
+    server.serve_forever()
