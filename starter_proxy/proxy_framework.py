@@ -12,11 +12,13 @@ default_port = None
 throughput = 0
 bit_rates = [1000, 500, 100, 10]
 
+
 @app.route('/<name>')
 def index(name = None):
     if name == None:
         return 'Hello World'
     return Response(requests.get('http://127.0.0.1:8080/%s' % name))
+
 
 @app.route('/vod/<name>')
 def flash(name = None):
@@ -42,11 +44,13 @@ def flash(name = None):
         bit_rate, " ", port, " ", name)
     return Response(res)
 
+
 def request_dns():
     global default_port
     if default_port != None:
         return default_port
     return int(requests.get('http://127.0.0.1:%d/' % dns_port).content)
+
 
 if __name__ == '__main__':
     argc = sys.argv.__len__()
