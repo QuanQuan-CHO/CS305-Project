@@ -42,6 +42,8 @@ RUN apt-get update &&\
     make elemlist &&\
     make install
 
+# Fix the bug "file too short"
+# by Froster
 RUN cd /usr/local/apache2/lib/ &&\
     chmod +x /usr/local/apache2/bin/httpd &&\
     rm libaprutil-1.so.0 &&\
