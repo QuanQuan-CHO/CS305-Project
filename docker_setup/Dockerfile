@@ -19,6 +19,12 @@ RUN mkdir /var/www/ &&\
 # copy launch and test scripts
 ADD ./netsim/ /autograder/netsim/
 
+# copy proxy
+ADD ./proxy/ /autograder/proxy/
+
+# copy dns
+ADD ./dns/ /autograder/dns/
+
 # copy apache binary, configuration and binary
 ADD ./www/ /var/www/
 

@@ -1,14 +1,6 @@
-import math
-from multiprocessing.dummy import active_children
 import socket
-import sys
-import threading
-import time
-from threading import Thread
 
-from dns.query import udp
-from dns import *
-import dns
+from docker_setup.dns import dns
 import argparse
 
 """
@@ -51,7 +43,7 @@ def request_dns():
     Request dns server here. Specify the domain name as you want.
     """
     query = message.make_query("xxx", dns.rdatatype.A,
-                                        dns.rdataclass.IN)
+                               dns.rdataclass.IN)
 
 def calculate_throughput():
     """
