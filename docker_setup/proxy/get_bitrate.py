@@ -1,9 +1,3 @@
-# _*_ coding : utf-8 _*_
-# @Time : 2022/5/10 14:43
-# @Author : 黄柯睿
-# @File : Demo
-# @Project : CS305-Project\
-
 from xml.dom import minidom
 
 if __name__ == '__main__':
