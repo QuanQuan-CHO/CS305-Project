@@ -1,6 +1,7 @@
 import re
 import sys
 import time
+from xml.dom import minidom
 
 import requests
 from flask import Flask, Response
@@ -10,7 +11,7 @@ app = Flask(__name__)
 app.debug = True
 default_port = None
 throughput = 0
-bit_rates = [1000, 500, 100, 10]
+bit_rates = []
 
 
 @app.route('/<name>')
@@ -52,7 +53,19 @@ def request_dns():
     return int(requests.get('http://127.0.0.1:%d/' % dns_port).content)
 
 
+def get_bitrate():
+    DOMTree = minidom.parse("../www/vod/big_buck_bunny.f4m")
+    data = DOMTree.documentElement
+    medias = data.getElementsByTagName('media')
+    bitrates = []
+    for m in medias:
+        if m.hasAttribute("bitrate"):
+            bitrates.append(int(m.getAttribute("bitrate")))
+    return bitrates
+
+
 if __name__ == '__main__':
+    bit_rates = get_bitrate()
     argc = sys.argv.__len__()
     assert argc == 5 or argc == 6
     if argc == 6:
