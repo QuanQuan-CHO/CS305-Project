@@ -1,71 +1,85 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
+<head>
     <title>Strobe Media Playback</title>
+<!--    <link href="https://www.w3school.com.cn/lib/bs/bootstrap.css" rel="stylesheet">-->
+        <link href="bootstrap.css" rel="stylesheet">
+<!--    <script src="https://www.w3school.com.cn/lib/bs/bootstrap.js"></script>-->
+        <script src="bootstrap.js" type="application/x-javascript"></script>
     <script type="text/javascript" src="swfobject.js"></script>
-	<script type="text/javascript">  		
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
         var loc = window.location.host
 
-    	// Create a StrobeMediaPlayback configuration
-		var parameters =
-			{	src: "http://"+loc+"/vod/big_buck_bunny.f4m"
-   			,	autoPlay: true
-			,	controlBarAutoHide: false
-			,   javascriptCallbackFunction: "onJavaScriptBridgeCreated"
-			};
-    		
-		// Embed the player SWF:
-		swfobject.embedSWF
-			( "StrobeMediaPlayback.swf"
-			, "strobeMediaPlayback"
-			, 1280
-			, 720
-			, "10.1.0"
-			, {}
-			, parameters
-			, { allowFullScreen: "true"}
-			, { name: "strobeMediaPlayback" }
-			);
+        // Create a StrobeMediaPlayback configuration
+        var parameters =
+            {
+                src: "http://" + loc + "/vod/big_buck_bunny.f4m"
+                , autoPlay: true
+                , controlBarAutoHide: false
+                , javascriptCallbackFunction: "onJavaScriptBridgeCreated"
+            };
 
-			
-		function onCurrentTimeChange(time, playerId)
-		{
-			document.getElementById("currentTime").innerHTML = time;
-		}
-		
-		function onDurationChange(time, playerId)
-		{
-			document.getElementById("duration").innerHTML = time;
-		}
-		var player = null;
-		function onJavaScriptBridgeCreated(playerId)
-		{
-			if (player == null) {
-				player = document.getElementById(playerId);
-				
-				// Add event listeners that will update the
-				player.addEventListener("currentTimeChange", "onCurrentTimeChange");
-				player.addEventListener("durationChange", "onDurationChange");
-				
-				// Pause/Resume the playback when we click the Play/Pause link
-				document.getElementById("play-pause").onclick = function(){
-					var state = player.getState();
-					if (state == "ready" || state == "paused") {
-						player.play2();
-					}
-					else
-						if (state == "playing") {
-							player.pause();
-						}
-					return false;
-				};
-			}
-		}
-    </script>  	
-  </head>
-  <body>
-	<div id="strobeMediaPlayback">
-      <p>Alternative content</p>
+        // Embed the player SWF:
+        swfobject.embedSWF
+        ("StrobeMediaPlayback.swf"
+            , "strobeMediaPlayback"
+            , 1280
+            , 720
+            , "10.1.0"
+            , {}
+            , parameters
+            , {allowFullScreen: "true"}
+            , {name: "strobeMediaPlayback"}
+        );
+
+
+        function onCurrentTimeChange(time, playerId) {
+            document.getElementById("currentTime").innerHTML = time;
+        }
+
+        function onDurationChange(time, playerId) {
+            document.getElementById("duration").innerHTML = time;
+        }
+
+        var player = null;
+
+        function onJavaScriptBridgeCreated(playerId) {
+            if (player == null) {
+                player = document.getElementById(playerId);
+
+                // Add event listeners that will update the
+                player.addEventListener("currentTimeChange", "onCurrentTimeChange");
+                player.addEventListener("durationChange", "onDurationChange");
+
+                // Pause/Resume the playback when we click the Play/Pause link
+                document.getElementById("play-pause").onclick = function () {
+                    var state = player.getState();
+                    if (state == "ready" || state == "paused") {
+                        player.play2();
+                    } else if (state == "playing") {
+                        player.pause();
+                    }
+                    return false;
+                };
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container-sm align-middle">
+    <div id="strobeMediaPlayback">
+        <p>Alternative content</p>
     </div>
-  </body>
+    <div class="input-group mt-3 mb-3">
+        <select class="form-select-sm">
+            <option>Comment</option>
+            <option>Danmaku</option>
+        </select>
+        <input type="text" class="form-control" id="comment" name="text" placeholder="Text goes here">
+        <button class="btn btn-success" type="submit">Submit</button>
+    </div>
+    <div class="container-md p-5 my-5 border bg-dark"></div>
+</div>
+</body>
 </html>
