@@ -7,10 +7,10 @@
     <style>
         .screen_container {
             position: relative;
-            /*width: 960px;*/
-            /*height: 540px;*/
             width: auto;
             height: auto;
+            width: 960px;
+            height: 540px;
             margin: 30px auto;
             background: transparent;
             overflow: hidden;
@@ -98,11 +98,18 @@
         <input type="text" class="form-control" id="context" name="text" placeholder="Text goes here">
         <button type="submit" class="btn btn-success" id="submit" name="submit">Submit</button>
     </div>
+    <div class="container-fluid mt-1 mb-1 text-end">
+        <a class='' href='/logout'>Log out</a>
+    </div>
     <div id="comment_box" class="container-fluid p-5 my-1 border bg-transparent"></div>
 </div>
 </body>
 </html>
 <script type="application/x-javascript">
+    var danmakus;
+    var comments;
+    var tempDanmaku = 0;
+    var tempComment = 0;
     var tempStyle = -1;
     var username;
     const timers = [];
@@ -110,11 +117,38 @@
     const jqueryDom = createDanmaku('hihihi'); // test danmaku, delete it as you like
     addInterval(jqueryDom);// test danmaku, delete it as you like
 
+    window.onload = function () {
+        getContent()
+    }
+    function getContent() {
+        fetch(url + '?method=get_danmaku').then(response => response.text()).then(text => {
+            if (text === '') return
+            danmakus = text.split('&')
+            while (tempDanmaku < danmakus.length) {
+                console.log(danmakus[tempDanmaku])
+                addInterval(createDanmaku(danmakus[tempDanmaku]))
+                tempDanmaku++
+            }
+        })
+        fetch(url + '?method=get_comment').then(response => response.text()).then(text => {
+            if (text === '') return
+            comments = text.split('&')
+            let values;
+            while (tempComment < comments.length) {
+                values = comments[tempComment].split(':');
+                addComment(values[1], values[0])
+                tempComment++
+            }
+        })
+    }
+    setInterval(getContent, 1000)
+
+
     fetch(url + '?method=get_username', {
         method: 'get'
     }).then(response => response.text()).then(text => {
         username = text;
-        $('#username').val(text)
+        $('#username').text(text)
     })
     var selected = 'Comment';
     $('#select').change(function () {
@@ -145,13 +179,12 @@
         let val = $("#context").val()
         if (selected === 'Comment') {
             fetch(url + '?method=comment&content=' + val + '&username=' + username)
-            addComment(val, username)
+            // addComment(val, username)
         } else if (selected === 'Danmaku') {
             fetch(url + '?method=danmaku&content=' + val + '&username=' + username)
-            addInterval(createDanmaku(val))
+            // addInterval(createDanmaku(val))
         }
     })
-
 
 
     function createDanmaku(text) {
