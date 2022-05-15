@@ -15,14 +15,14 @@ bit_rates = []
 
 
 @app.route('/<name>')
-def index(name = None):
+def index(name=None):
     if name == None:
         return 'Hello World'
     return Response(requests.get('http://127.0.0.1:8080/%s' % name))
 
 
 @app.route('/vod/<name>')
-def flash(name = None):
+def flash(name=None):
     global throughput
     bit_rate = 0
     if name == 'big_buck_bunny.f4m':
@@ -34,15 +34,15 @@ def flash(name = None):
                 break
         name = str(bit_rate) + real_name
         print(name)
-    
+
     port = int(request_dns())
     start = time.time()
     res = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name))
     end = time.time()
     current_T = res.content.__len__() / (end - start)
     throughput = alpha * throughput + (1 - alpha) * current_T
-    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),  ' ', end - start, " ", current_T, " ", throughput, " ",
-        bit_rate, " ", port, " ", name)
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), ' ', end - start, " ", current_T, " ", throughput, " ",
+          bit_rate, " ", port, " ", name)
     return Response(res)
 
 
