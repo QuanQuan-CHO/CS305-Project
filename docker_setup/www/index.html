@@ -2,26 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">-->
     <title>Strobe Media Playback</title>
     <link href="https://www.w3school.com.cn/lib/bs/bootstrap.css" rel="stylesheet">
     <!--    <link href="bootstrap.css" rel="stylesheet">-->
-    <style>
+    <style type="text/css">
         .screen_container {
-            position: relative;
-            width: auto;
-            height: auto;
-            width: 960px;
-            height: 540px;
+            /*position: relative;*/
+            /*width: 100%;*/
+            height: 0;
+            padding-bottom: 56.25%;
             margin: 30px auto;
-            background: transparent;
-            overflow: hidden;
+            /*background: transparent;*/
+            /*overflow: hidden;*/
             border-style: solid;
             border-radius: 25px;
             border-color: purple;
             z-index: 999;
         }
     </style>
-    <script src="https://www.w3school.com.cn/lib/bs/bootstrap.js" type="stylesheet"></script>
+    <script src="https://www.w3school.com.cn/lib/bs/bootstrap.js" type="application/x-javascript"></script>
     <!--    <script src="bootstrap.js" type="application/x-javascript"></script>-->
     <script type="text/javascript" src="swfobject.js"></script>
     <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js" type="application/x-javascript"></script>
@@ -41,8 +41,8 @@
         swfobject.embedSWF
         ("StrobeMediaPlayback.swf"
             , "strobeMediaPlayback"
-            , 1280
-            , 720
+            , '100%'
+            , '100%'
             , "10.1.0"
             , {}
             , parameters
@@ -85,9 +85,11 @@
 </head>
 <body>
 <div class="container-sm align-middle">
-    <div class="screen_container">
-        <div id="strobeMediaPlayback">
-            <p>Alternative content</p>
+    <div class="screen_container w-100 position-relative bg-transparent overflow-hidden">
+        <div class="position-absolute w-100 h-100">
+            <div id="strobeMediaPlayback">
+                <p>Alternative content</p>
+            </div>
         </div>
     </div>
     <div class="input-group mt-3 mb-3">
@@ -100,7 +102,7 @@
         <button type="submit" class="btn btn-success" id="submit" name="submit">Submit</button>
     </div>
     <div class="container-fluid mt-1 mb-1 text-end">
-        <a class='' href='/logout'>Log out</a>
+        <a class='ratio-16x9' href='/logout'>Log out</a>
     </div>
     <div id="comment_box" class="container-fluid p-5 my-1 border bg-transparent"></div>
 </div>
@@ -121,6 +123,7 @@
     window.onload = function () {
         getContent()
     }
+
     function getContent() {
         fetch(url + '?method=get_danmaku').then(response => response.text()).then(text => {
             if (text === '') return
@@ -142,6 +145,7 @@
             }
         })
     }
+
     setInterval(getContent, 1000)
 
 
@@ -178,6 +182,7 @@
 
     $('#submit').on('click', function () {
         let val = $("#context").val()
+        if (val.length < 0) return;
         if (selected === 'Comment') {
             fetch(url + '?method=comment&content=' + val + '&username=' + username)
             // addComment(val, username)

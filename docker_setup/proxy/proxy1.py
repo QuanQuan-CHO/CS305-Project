@@ -21,11 +21,16 @@ app.secret_key = 'fkdjsafjdkfdlkjfadskjfadskljdsfklj'
 
 
 @app.route('/<name>')
-def index(name=None):
+def other(name):
     if 'username' not in session:
         return redirect(url_for('login'))
-    # if name == None:
-    #     return 'Hello World'
+    return Response(requests.get('http://127.0.0.1:8080/%s' % name))
+
+
+@app.route('/index.html')
+def index():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     elif len(request.args) > 0:
         global danmakus, comments
         method = request.args.get('method')
@@ -44,8 +49,7 @@ def index(name=None):
         elif method == 'get_username':
             if 'username' in session:
                 return session['username']
-    else:
-        return Response(requests.get('http://127.0.0.1:8080/%s' % name))
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -54,6 +58,13 @@ def login():
         session['username'] = request.form['username']
         return redirect(url_for('index'))
     return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it is there
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 
 @app.route('/vod/<name>')
@@ -79,12 +90,6 @@ def flash(name=None):
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), ' ', end - start, " ", current_T, " ", throughput, " ",
           bit_rate, " ", port, " ", name)
     return Response(res)
-
-
-@app.route('/<name>', methods=['POST'])
-def return_danmaku():
-    if request.form.get('submit') != '':
-        danmaku_list.append(request.form.get('submit'))
 
 
 def request_dns():
