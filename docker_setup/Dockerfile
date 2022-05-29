@@ -22,9 +22,6 @@ ADD ./netsim/ /autograder/netsim/
 # copy proxy
 ADD ./proxy/ /autograder/proxy/
 
-# copy dns
-ADD ./dns/ /autograder/dns/
-
 # copy apache binary, configuration and binary
 ADD ./www/ /var/www/
 
@@ -58,3 +55,14 @@ RUN cd /usr/local/apache2/lib/ &&\
     ln -s libexpat.so.0.5.0 libexpat.so.0 &&\
     rm libapr-1.so.0 &&\
     ln -s libapr-1.so.0.5.1 libapr-1.so.0
+
+# cd /autograder/netsim
+# python3 netsim.py servers stop -s servers/2servers
+# python3 netsim.py servers start -s servers/2servers -l netsim-log.txt
+# python3 dns.py servers/2servers 8070
+
+# cd /autograder/proxy
+# python3 proxy.py proxy-log.txt 0.5 7777 53 8081
+#                 <log> <alpha> <listen-port> <dns-port> [<default-port>]
+
+# docker run --name cs305-project -it -p 7777:7777 cs305-project:1.0 /bin/bash
