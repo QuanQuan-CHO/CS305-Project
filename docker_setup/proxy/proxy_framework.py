@@ -1,6 +1,6 @@
 import socket
 
-from docker_setup.dns import dns
+from docker_setup.netsim import dns
 import argparse
 
 """
