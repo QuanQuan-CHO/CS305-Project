@@ -18,20 +18,14 @@ danmakus = ''
 comments = ''
 
 app.secret_key = 'fkdjsafjdkfdlkjfadskjfadskljdsfklj'
+file = open('output.txt', 'w')
 
 
 @app.route('/<name>')
 def other(name):
     if 'username' not in session:
         return redirect(url_for('login'))
-    return Response(requests.get('http://127.0.0.1:8080/%s' % name))
-
-
-@app.route('/index.html')
-def index():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    elif len(request.args) > 0:
+    if len(request.args) > 0:
         global danmakus, comments
         method = request.args.get('method')
         if method == 'get_danmaku':
@@ -49,7 +43,7 @@ def index():
         elif method == 'get_username':
             if 'username' in session:
                 return session['username']
-    return render_template('index.html')
+    return Response(requests.get('http://127.0.0.1:8080/%s' % name))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -69,7 +63,7 @@ def logout():
 
 @app.route('/vod/<name>')
 def flash(name=None):
-    global throughput
+    global throughput, file
     bit_rate = 0
     if name == 'big_buck_bunny.f4m':
         name = '10.f4m'
@@ -87,8 +81,11 @@ def flash(name=None):
     end = time.time()
     current_T = res.content.__len__() / (end - start)
     throughput = alpha * throughput + (1 - alpha) * current_T
-    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), ' ', end - start, " ", current_T, " ", throughput, " ",
-          bit_rate, " ", port, " ", name)
+    out = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(end - start) + ' ' + str(
+        current_T) + ' ' + throughput + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
+    file.write(out)
+    file.flush()
+    print(out)
     return Response(res)
 
 
