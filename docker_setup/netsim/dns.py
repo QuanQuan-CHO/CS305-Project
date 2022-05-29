@@ -13,6 +13,7 @@ current_pos = 0
 
 @app.route('/')
 def find_port():
+    global current_pos
     ret = servers[current_pos]
     current_pos += 1
     if current_pos == servers.__len__():

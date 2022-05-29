@@ -22,7 +22,7 @@ file = open('output.txt', 'w')
 
 
 @app.route('/<name>')
-def other(name):
+def index(name):
     if 'username' not in session:
         return redirect(url_for('login'))
     if len(request.args) > 0:
@@ -50,7 +50,7 @@ def other(name):
 def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
-        return redirect(url_for('index'))
+        return redirect(url_for('index', name='index.html'))
     return render_template('login.html')
 
 
