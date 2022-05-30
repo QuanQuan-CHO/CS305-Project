@@ -63,14 +63,22 @@ def logout():
 
 @app.route('/vod/<name>')
 def flash(name=None):
-    global throughput, file
+    global throughput, file, bit_rates
     bit_rate = 0
     if name == 'big_buck_bunny.f4m':
+        port = int(request_dns())
+        text = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name)).text
+        print(text)
+        bit_rates = get_bitrate(text)
+        bit_rates.sort()
+        bit_rates.reverse()
+        print(bit_rates)
         name = '10.f4m'
     else:
         real_name = re.match('\d*(Seg.*)', name).group(1)
-        for bit_rate in bit_rates:
-            if bit_rate * 1.5 <= throughput:
+        for bitrate in bit_rates:
+            if bitrate * 1.5 <= throughput:
+                bit_rate = bitrate
                 break
         name = str(bit_rate) + real_name
         print(name)
@@ -79,10 +87,10 @@ def flash(name=None):
     start = time.time()
     res = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name))
     end = time.time()
-    current_T = res.content.__len__() / (end - start)
-    throughput = alpha * throughput + (1 - alpha) * current_T
+    T_new = res.content.__len__() / (end - start)
+    throughput = alpha * T_new + (1 - alpha) * throughput
     out = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(end - start) + ' ' + str(
-        current_T) + ' ' + throughput + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
+        T_new) + ' ' + str(throughput) + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
     file.write(out)
     file.flush()
     print(out)
@@ -96,8 +104,9 @@ def request_dns():
     return int(requests.get('http://127.0.0.1:%d/' % dns_port).content)
 
 
-def get_bitrate():
-    DOMTree = minidom.parse("../www/vod/big_buck_bunny.f4m")
+def get_bitrate(xml_str: str):
+    # DOMTree = minidom.parse("../www/vod/big_buck_bunny.f4m")
+    DOMTree = minidom.parseString(xml_str)
     data = DOMTree.documentElement
     medias = data.getElementsByTagName('media')
     bitrates = []
@@ -108,7 +117,7 @@ def get_bitrate():
 
 
 if __name__ == '__main__':
-    bit_rates = get_bitrate()
+    # bit_rates = get_bitrate()
     argc = sys.argv.__len__()
     assert argc == 5 or argc == 6
     if argc == 6:
