@@ -18,11 +18,11 @@ def fairness(x, y):
     return ((x + y) * (x + y)) / (2 * ((x * x) + (y * y)))
 
 
-if len(sys.argv) < 4:
+if len(sys.argv) < 4:  # invalid param
     print(USAGE)
     exit(-1)
 
-nsl = open(sys.argv[1]).read().split('\n')[:-1]
+nsl = open(sys.argv[1]).read().split('\n')[:-1]  # open the netsim.log file
 
 lfs = []
 for i in range(2, len(sys.argv)):
@@ -32,7 +32,7 @@ for i in range(2, len(sys.argv)):
 BRs = defaultdict(list)
 TPUTs = defaultdict(list)
 for i, lf in enumerate(lfs):
-    for l in lf:
+    for l in lf:  # lf: one log file
         (t, dur, t_new, avg, br, ip, seg) = l.split(' ')
         t = int(float(t))
         if t in BRs and [m for m in BRs[t] if m[0] == i]:
@@ -124,7 +124,7 @@ for i in range(len(BR_y)):
 
 # Get Utility
 BW = []
-for l in nsl:
+for l in nsl:  # netsim.log
     print(l)
     print(l.split(" "))
     (t, ln, bw) = l.split(' ')
@@ -201,5 +201,5 @@ for i in range(0, 3):
     ax.axis([x[0], x[1], ymin[i], ymax[i]])
     plt.subplots_adjust(top=0.95)
     plt.subplots_adjust(bottom=0.15)
-    # plt.show()
+    plt.show()
     plt.savefig(outputs[i])
