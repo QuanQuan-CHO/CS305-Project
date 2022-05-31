@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Strobe Media Playback</title>
+    <link href="https://www.w3school.com.cn/lib/bs/bootstrap.css" rel="stylesheet">
+    <!--    <link href="bootstrap.css" rel="stylesheet">-->
+    <style type="text/css">
+        .screen_container {
+            height: 0;
+            padding-bottom: 56.25%;
+            margin: 30px auto;
+            border-style: solid;
+            border-radius: 25px;
+            border-color: purple;
+            z-index: 999;
+        }
+    </style>
+    <script src="https://www.w3school.com.cn/lib/bs/bootstrap.js" type="application/x-javascript"></script>
+    <!--    <script src="bootstrap.js" type="application/x-javascript"></script>-->
+    <script type="text/javascript" src="swfobject.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js" type="application/x-javascript"></script>
+    <script type="text/javascript">
+        var loc = window.location.host
+
+        // Create a StrobeMediaPlayback configuration
+        var parameters =
+            {
+                src: "http://" + loc + "/vod/big_buck_bunny.f4m"
+                , autoPlay: true
+                , controlBarAutoHide: false
+                , javascriptCallbackFunction: "onJavaScriptBridgeCreated"
+            };
+
+        // Embed the player SWF:
+        swfobject.embedSWF
+        ("StrobeMediaPlayback.swf"
+            , "strobeMediaPlayback"
+            , '100%'
+            , '100%'
+            , "10.1.0"
+            , {}
+            , parameters
+            , {allowFullScreen: "true"}
+            , {name: "strobeMediaPlayback"}
+        );
+
+
+        function onCurrentTimeChange(time, playerId) {
+            document.getElementById("currentTime").innerHTML = time;
+        }
+
+        function onDurationChange(time, playerId) {
+            document.getElementById("duration").innerHTML = time;
+        }
+
+        var player = null;
+
+        function onJavaScriptBridgeCreated(playerId) {
+            if (player == null) {
+                player = document.getElementById(playerId);
+
+                // Add event listeners that will update the
+                player.addEventListener("currentTimeChange", "onCurrentTimeChange");
+                player.addEventListener("durationChange", "onDurationChange");
+
+                // Pause/Resume the playback when we click the Play/Pause link
+                document.getElementById("play-pause").onclick = function () {
+                    var state = player.getState();
+                    if (state == "ready" || state == "paused") {
+                        player.play2();
+                    } else if (state == "playing") {
+                        player.pause();
+                    }
+                    return false;
+                };
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container-sm align-middle">
+    <div class="screen_container w-100 position-relative bg-transparent overflow-hidden">
+        <div class="position-absolute w-100 h-100">
+            <div id="strobeMediaPlayback">
+                <p>Alternative content</p>
+            </div>
+        </div>
+    </div>
+    <div class="input-group mt-3 mb-3">
+        <span class="input-group-text bg-secondary" id="username">Username</span>
+        <select id="select" class="form-select-sm">
+            <option>Comment</option>
+            <option>Danmaku</option>
+        </select>
+        <input type="text" class="form-control" id="context" name="text" placeholder="Text goes here">
+        <button type="submit" class="btn btn-success" id="submit" name="submit">Submit</button>
+    </div>
+    <div class="container-fluid mt-1 mb-1 text-end">
+        <a class='ratio-16x9' href='/logout'>Log out</a>
+    </div>
+    <div id="comment_box" class="container-fluid p-5 my-1 border bg-transparent"></div>
+</div>
+</body>
+</html>
+<script type="application/x-javascript">
+    var danmakus;
+    var comments;
+    var tempDanmaku = 0;
+    var tempComment = 0;
+    var tempStyle = -1;
+    var username;
+    const timers = [];
+    const url = window.location.href
+    const jqueryDom = createDanmaku('hihihi'); // test danmaku, delete it as you like
+    addInterval(jqueryDom);// test danmaku, delete it as you like
+
+    window.onload = function () {
+        getContent()
+    }
+
+    function getContent() {
+        fetch(url + '?method=get_danmaku').then(response => response.text()).then(text => {
+            if (text === '') return
+            danmakus = text.split('&')
+            while (tempDanmaku < danmakus.length) {
+                console.log(danmakus[tempDanmaku])
+                addInterval(createDanmaku(danmakus[tempDanmaku]))
+                tempDanmaku++
+            }
+        })
+        fetch(url + '?method=get_comment').then(response => response.text()).then(text => {
+            if (text === '') return
+            comments = text.split('&')
+            let values;
+            while (tempComment < comments.length) {
+                values = comments[tempComment].split(':');
+                addComment(values[1], values[0])
+                tempComment++
+            }
+        })
+    }
+
+    setInterval(getContent, 1000)
+
+
+    fetch(url + '?method=get_username', {
+        method: 'get'
+    }).then(response => response.text()).then(text => {
+        username = text;
+        $('#username').text(text)
+    })
+    var selected = 'Comment';
+    $('#select').change(function () {
+        selected = $('#select').val()
+    })
+
+    function addComment(value, username) {
+        tempStyle = (tempStyle + 1) % 7;
+        style = ['bg-primary text-white'
+            , 'bg-success text-white'
+            , 'bg-info text-white'
+            , 'bg-warning text-white'
+            , 'bg-danger text-white'
+            , 'bg-secondary text-white'
+            , 'bg-dark text-white'
+            , 'bg-light text-dark']
+        var htmlText = '';
+        htmlText += '<div class="card ' + style[tempStyle] + ' mb-4">';
+        htmlText += '<div class="card-body">';
+        htmlText += '<h4 class="card-title">' + username + '</h4>';
+        htmlText += '<p class="card-text">' + value + '</p>';
+        htmlText += '</div>';
+        htmlText += '</div>';
+        $('#comment_box').append(htmlText)
+    }
+
+    $('#submit').on('click', function () {
+        let val = $("#context").val()
+        if (val.length < 0) return;
+        if (selected === 'Comment') {
+            fetch(url + '?method=comment&content=' + val + '&username=' + username)
+            // addComment(val, username)
+        } else if (selected === 'Danmaku') {
+            fetch(url + '?method=danmaku&content=' + val + '&username=' + username)
+            // addInterval(createDanmaku(val))
+        }
+    })
+
+
+    function createDanmaku(text) {
+        const jqueryDom = $("<div class='bullet text-black'>" + text + "</div>");
+        let container = $(".screen_container")
+        // const fontColor = "rgb(255,255,255)";
+        const fontSize = "20px";
+        let top = Math.floor(Math.random() * 400) + "px";
+        const left = container.width() + "px";
+        jqueryDom.css({
+            "position": 'absolute',
+            // "color": fontColor,
+            "font-size": fontSize,
+            "left": left,
+            "top": top,
+        });
+        container.append(jqueryDom);
+        return jqueryDom;
+    }
+
+    // add timer task to let the danmaku fly from right to left
+    function addInterval(jqueryDom) {
+        let left = jqueryDom.offset().left - $(".screen_container").offset().left;
+        const timer = setInterval(function () {
+            left--;
+            jqueryDom.css("left", left + "px");
+            if (jqueryDom.offset().left + jqueryDom.width() < $(".screen_container").offset().left) {
+                jqueryDom.remove();
+                clearInterval(timer);
+            }
+        }, 5); // set delay as 5ms,which means the danmaku changes its position every 5ms
+        timers.push(timer);
+    }
+</script>

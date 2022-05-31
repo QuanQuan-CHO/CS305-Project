@@ -18,7 +18,6 @@ danmakus = ''
 comments = ''
 
 app.secret_key = 'fkdjsafjdkfdlkjfadskjfadskljdsfklj'
-file = open('output.txt', 'w')
 
 
 @app.route('/<name>')
@@ -95,7 +94,7 @@ def flash(name=None):
     throughput = alpha * T_new + (1 - alpha) * throughput
     out = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(end - start) + ' ' + str(
         T_new) + ' ' + str(throughput) + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
-    file.write(out)
+    file.write(out+str('\n'))
     file.flush()
     print(out)
     return Response(res)

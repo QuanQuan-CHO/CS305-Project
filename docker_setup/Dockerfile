@@ -62,8 +62,8 @@ RUN cd /usr/local/apache2/lib/ &&\
 # python3 dns.py servers/2servers 8070
 
 # cd /autograder/proxy
-# python3 proxy.py proxy1-log.txt 0.5 7777 53 8080
-# python3 proxy.py proxy2-log.txt 0.5 7778 53 8081
+# python3 proxy1.py proxy1-log.txt 0.5 7777 53 8080
+# python3 proxy1.py proxy2-log.txt 0.5 7778 53 8081
 #                 <log> <alpha> <listen-port> <dns-port> [<default-port>]
 
-# docker run --name cs305-project -it -p 7777:7777 -p 7778:7778 cs305-project:1.0 /bin/bash
+# docker run --name cs305-project -it -p 7770:7770 -p 7771:7771 -p 7772:7772 -p 7773:7773 -p 7774:7774 -p 7775:7775 -p 7776:7776 -p 7777:7777 -p 7778:7778 -p 7779:7779 cs305-project:1.0 /bin/bash
