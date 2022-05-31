@@ -35,7 +35,8 @@ def index(name):
         username = request.args.get('username')
         content = request.args.get('content')
         if method == 'comment':
-            comment_list.append(username + ':' + content)
+            time = request.args.get('time')
+            comment_list.append(username + '-' + content + '-' + time)
             comments = '&'.join(comment_list)
         elif method == 'danmaku':
             danmaku_list.append(content)
@@ -45,6 +46,11 @@ def index(name):
                 return session['username']
     return Response(requests.get('http://127.0.0.1:8080/%s' % name))
 
+
+@app.route('/close')
+def close_server():
+    server.stop()
+    sys.exit(0)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -68,11 +74,9 @@ def flash(name=None):
     if name == 'big_buck_bunny.f4m':
         port = int(request_dns())
         text = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name)).text
-        print(text)
         bit_rates = get_bitrate(text)
         bit_rates.sort()
         bit_rates.reverse()
-        print(bit_rates)
         name = '10.f4m'
     else:
         real_name = re.match('\d*(Seg.*)', name).group(1)
@@ -87,7 +91,7 @@ def flash(name=None):
     start = time.time()
     res = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name))
     end = time.time()
-    T_new = res.content.__len__() / (end - start)
+    T_new = len(res.content) / (end - start) / 1000
     throughput = alpha * T_new + (1 - alpha) * throughput
     out = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(end - start) + ' ' + str(
         T_new) + ' ' + str(throughput) + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
@@ -104,7 +108,7 @@ def request_dns():
     return int(requests.get('http://127.0.0.1:%d/' % dns_port).content)
 
 
-def get_bitrate(xml_str: str):
+def get_bitrate(xml_str):
     # DOMTree = minidom.parse("../www/vod/big_buck_bunny.f4m")
     DOMTree = minidom.parseString(xml_str)
     data = DOMTree.documentElement
@@ -123,6 +127,7 @@ if __name__ == '__main__':
     if argc == 6:
         default_port = sys.argv[5]
     log_file = sys.argv[1]
+    file = open(log_file, 'w')
     alpha = float(sys.argv[2])
     listen_port = int(sys.argv[3])
     dns_port = int(sys.argv[4])
