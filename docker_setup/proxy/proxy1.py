@@ -68,7 +68,7 @@ def logout():
 
 @app.route('/vod/<name>')
 def flash(name=None):
-    global throughput, file, bit_rates
+    global throughput, bit_rates
     bit_rate = 0
     if name == 'big_buck_bunny.f4m':
         port = int(request_dns())
@@ -85,7 +85,8 @@ def flash(name=None):
                 break
         name = str(bit_rate) + real_name
         print(name)
-
+    if bit_rate == 0:
+        bit_rate = 10
     port = int(request_dns())
     start = time.time()
     res = requests.get('http://127.0.0.1:%d/vod/%s' % (port, name))
@@ -94,7 +95,9 @@ def flash(name=None):
     throughput = alpha * T_new + (1 - alpha) * throughput
     out = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(end - start) + ' ' + str(
         T_new) + ' ' + str(throughput) + ' ' + str(bit_rate) + ' ' + str(port) + ' ' + name
-    file.write(out+str('\n'))
+    print('length =', len(res.content), 'throughput =', throughput, 'Time =', (end - start))
+    file.write(out)
+    file.write('\n')
     file.flush()
     print(out)
     return Response(res)
