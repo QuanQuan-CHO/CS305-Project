@@ -1,22 +1,48 @@
 # CS305 Project Report
-**12012427 黄柯睿 贡献比xx%**
+**12012427 黄柯睿 贡献比33%**
 
-**12010641 牛景萱 贡献比xx%**
+**12010641 牛景萱 贡献比33%**
 
-**12011619 王立全 贡献比xx%**
+**12011619 王立全 贡献比33%**
 
 
 
 Our data collected below are all based on the follwing event:
 
 ```
-0 link 100000
-20 link 10000
-20 link 2000
+0 link 200000
+20 link 20000
+20 link 1000
 20 link 200
 ```
 
-In the event file, we make the bandwidth decrease every 20s, so the network becomes more congested
+In the event file, we make the bandwidth decrease every 20s, so the network becomes more congested.
+
+
+
+## Smoothness
+
+|       |                           onelink                            |                           twolink                            |                          sharelink                           |
+| :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| α=0.1 | <img src="README.pictures/image-20220531225519275.png" alt="image-20220531225519275" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232042267.png" alt="image-20220531232042267" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232101741.png" alt="image-20220531232101741" style="zoom:50%;" /> |
+| α=0.5 | <img src="README.pictures/image-20220531232121011.png" alt="image-20220531232121011" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232427787.png" alt="image-20220531232427787" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232446774.png" alt="image-20220531232446774" style="zoom:50%;" /> |
+| α=0.9 | <img src="README.pictures/image-20220531232504160.png" alt="image-20220531232504160" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123426232.png" alt="image-20220601123426232" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232550156.png" alt="image-20220531232550156" style="zoom:50%;" /> |
+
+```python
+ylabels = ['% of link utilization', 'Jain Fairness', 'Derivative of BR wrt time']
+```
+
+By checking the code in `grapher.py` we can see that **smoothness** means "Derivative of BR wrt time"
+
+.<img src="README.pictures/image-20220601172440699.png" alt="image-20220601172440699" style="zoom:80%;" />
+
+The fifth param in proxy's log file is **BR** (bit rate), so the smoothness means **the change rate of bit rate**
+
+We can see clearly that at the beginning the bit rate suddenly increased because we initialized the bit rate as 200 but the bandwidth is 200000
+
+At 20000->1000, the bit rate suddenly decreased because the bandwidth becomes too narrow, and at this time the video becomes vaguer
+
+There's no good params to improve this because the change of bandwidth defined in the event file is stable
 
 
 
@@ -26,7 +52,7 @@ In the event file, we make the bandwidth decrease every 20s, so the network beco
 | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | α=0.1 | <img src="README.pictures/image-20220531215450473.png" alt="image-20220531215450473" style="zoom:50%;" /> | <img src="README.pictures/image-20220531215806258.png" alt="image-20220531215806258" style="zoom:50%;" /> | <img src="README.pictures/image-20220531215947560.png" alt="image-20220531215947560" style="zoom:50%;" /> |
 | α=0.5 | <img src="README.pictures/image-20220531215521181.png" alt="image-20220531215521181" style="zoom:50%;" /> | <img src="README.pictures/image-20220531215845553.png" alt="image-20220531215845553" style="zoom:50%;" /> | <img src="README.pictures/image-20220531220004636.png" alt="image-20220531220004636" style="zoom:50%;" /> |
-| α=0.8 | <img src="README.pictures/image-20220531215719677.png" alt="image-20220531215719677" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123337613.png" alt="image-20220601123337613" style="zoom:50%;" /> | <img src="README.pictures/image-20220531223638727.png" alt="image-20220531223638727" style="zoom:50%;" /> |
+| α=0.9 | <img src="README.pictures/image-20220531215719677.png" alt="image-20220531215719677" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123337613.png" alt="image-20220601123337613" style="zoom:50%;" /> | <img src="README.pictures/image-20220531223638727.png" alt="image-20220531223638727" style="zoom:50%;" /> |
 
 **Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula is $^{[1]}$
 $$
@@ -56,26 +82,9 @@ From the pictures, we can see that **sharelink α=0.1** performs the best
 
 Another feature we noted is that in the **onelink** column, there are always imbalance after the `100000->10000` and `2000->200`
 
-but balanced well after `10000->2000`, this may because the former's change rate is 10, which is bigger than the later's 5
+This feature is the same as Jain Fairness's change feature, from this, we can know that the mutation of bit rate can also cause the imbalance between two proxies
 
 .<img src="README.pictures/image-20220601130654835.png" alt="image-20220601130654835" style="zoom: 67%;" />
-
-
-
-
-
-## Smoothness
-
-|       |                           onelink                            |                           twolink                            |                          sharelink                           |
-| :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| α=0.1 | <img src="README.pictures/image-20220531225519275.png" alt="image-20220531225519275" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232042267.png" alt="image-20220531232042267" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232101741.png" alt="image-20220531232101741" style="zoom:50%;" /> |
-| α=0.5 | <img src="README.pictures/image-20220531232121011.png" alt="image-20220531232121011" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232427787.png" alt="image-20220531232427787" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232446774.png" alt="image-20220531232446774" style="zoom:50%;" /> |
-| α=0.8 | <img src="README.pictures/image-20220531232504160.png" alt="image-20220531232504160" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123426232.png" alt="image-20220601123426232" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232550156.png" alt="image-20220531232550156" style="zoom:50%;" /> |
-
-- Generally we can see that the smoothess fluctuates seriously at `100000->10000` and `2000->200` and doesn't fluctuate at `10000->2000`, which is the same reason as we exampled before
-- We can see that as link pattern and α changes, the smoothness situation doesn't improve very well, so there isn't best choice for smoothness
-
-
 
 
 
@@ -85,7 +94,7 @@ but balanced well after `10000->2000`, this may because the former's change rate
 | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | α=0.1 | <img src="README.pictures/image-20220531232706372.png" alt="image-20220531232706372" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232851878.png" alt="image-20220531232851878" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232755024.png" alt="image-20220531232755024" style="zoom:50%;" /> |
 | α=0.5 | <img src="README.pictures/image-20220531232726870.png" alt="image-20220531232726870" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232905508.png" alt="image-20220531232905508" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232809819.png" alt="image-20220531232809819" style="zoom:50%;" /> |
-| α=0.8 | <img src="README.pictures/image-20220531232740904.png" alt="image-20220531232740904" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123443954.png" alt="image-20220601123443954" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232823041.png" alt="image-20220531232823041" style="zoom:50%;" /> |
+| α=0.9 | <img src="README.pictures/image-20220531232740904.png" alt="image-20220531232740904" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123443954.png" alt="image-20220601123443954" style="zoom:50%;" /> | <img src="README.pictures/image-20220531232823041.png" alt="image-20220531232823041" style="zoom:50%;" /> |
 
 - We can see clearly that at the bandwidth's sudden decrease, the utilization suddenly increase, especially in **twolink α=0.1**. This is because the network can't decrease the bit rate of segment requested in time, and α=0.1 makes the change rate more slower
 
@@ -100,6 +109,44 @@ but balanced well after `10000->2000`, this may because the former's change rate
     But the disadvantage is its fluctuation, which can be seen clearly in the picture
 
   - **Sharelink**'s advantage is its stability of utilization at **α=0.1**, which means the picture quality is more stable 
+
+
+
+## Bandwidth's increase and decrease
+
+Instead of decreasing the bandwidth, here we increase the bandwidth using the following event with **onelink α=0.5**
+
+```
+0 link_1 200
+20 link_1 1000
+20 link_1 20000
+20 link_1 100000
+```
+
+The fairness is perfectly maintained at 1, so the increase of bandwidth doesn't affect the balance between two proxies, but the decrease does.
+
+.<img src="README.pictures/image-20220601175306742.png" alt="image-20220601175306742" style="zoom: 50%;" />
+
+
+
+Then we test the real case, the bit rate will both increase and decrease
+
+```
+0 link_1 1000
+10 link_1 500
+10 link_1 2000
+10 link_1 10000
+10 link_1 100
+10 link_1 5000
+```
+
+Below picture is the fairness change, the feature is the same as we analyze before: there is imbalance when the bit rate decreases
+
+.<img src="README.pictures/image-20220601193543645.png" alt="image-20220601193543645" style="zoom:50%;" />
+
+Utilization change, the feature is the same as we analyze before: there is utilization increase when the bit rate decreases
+
+.<img src="README.pictures/image-20220601193721595.png" alt="image-20220601193721595" style="zoom:50%;" />
 
 
 
