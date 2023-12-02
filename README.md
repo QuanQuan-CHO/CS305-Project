@@ -1,6 +1,8 @@
 # CS305 Project Report
 **12012427 Kerui Huang**
+
 **12010641 Jingxuan Niu**
+
 **12011619 Liquan Wang**
 
 
@@ -32,7 +34,7 @@ ylabels = ['% of link utilization', 'Jain Fairness', 'Derivative of BR wrt time'
 
 By checking the code in `grapher.py` we can see that **smoothness** means "Derivative of BR wrt time"
 
- <img src="README.pictures/image-20220601172440699.png" alt="image-20220601172440699" style="zoom:80%;" />
+<img src="README.pictures/image-20220601172440699.png" alt="image-20220601172440699" style="zoom:80%;" />
 
 The fifth param in proxy's log file is **BR** (bit rate), so the smoothness means **the change rate of bit rate**
 
@@ -52,7 +54,7 @@ There's no good params to improve this because the change of bandwidth defined i
 | α=0.5 | <img src="README.pictures/image-20220531215521181.png" alt="image-20220531215521181" style="zoom:50%;" /> | <img src="README.pictures/image-20220531215845553.png" alt="image-20220531215845553" style="zoom:50%;" /> | <img src="README.pictures/image-20220531220004636.png" alt="image-20220531220004636" style="zoom:50%;" /> |
 | α=0.9 | <img src="README.pictures/image-20220531215719677.png" alt="image-20220531215719677" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123337613.png" alt="image-20220601123337613" style="zoom:50%;" /> | <img src="README.pictures/image-20220531223638727.png" alt="image-20220531223638727" style="zoom:50%;" /> |
 
-**Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula$^{[1]}$ is 
+**Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula$[1]$ is 
 $$
 F\left(x_{1}, \ldots x_{n}\right)=\frac{\left(\Sigma_{i=1}^{n} x_{i}\right)^{2}}{n \Sigma_{i=1}^{n} x_{i}^{2}} \in\left[\frac{1}{n}, 1\right]
 $$
@@ -69,7 +71,9 @@ where $x_i$ is each stream's bandwidth, the more $F$ gets close to 1, the system
 
 From the pictures, we can see that **sharelink α=0.1** performs the best
 
-1. This may because that the **sharelink** shares the same link, so the difference is less<img src="README.pictures/image-20220601125511373.png" alt="image-20220601125511373" style="zoom: 80%;" />
+1. This may because that the **sharelink** shares the same link, so the difference is less
+
+   <img src="README.pictures/image-20220601125511373.png" alt="image-20220601125511373" style="zoom: 80%;" />
 
 2. And because **α=0.1**, the weight of $T_{current}$ is low, so the change rate of bit rate is low, which makes the fluctuation of network milder, the fairness will more likely to be 1
 
@@ -79,7 +83,7 @@ Another feature we noted is that in the **onelink** column, there are always imb
 
 This feature is the same as Jain Fairness's change feature, from this, we can know that the mutation of bit rate can also cause the imbalance between two proxies
 
- <img src="README.pictures/image-20220601130654835.png" alt="image-20220601130654835" style="zoom: 67%;" />
+<img src="README.pictures/image-20220601130654835.png" alt="image-20220601130654835" style="zoom: 67%;" />
 
 
 
@@ -120,7 +124,7 @@ Instead of decreasing the bandwidth, here we increase the bandwidth using the fo
 
 The fairness is perfectly maintained at 1, so the increase of bandwidth doesn't affect the balance between two proxies, but the decrease does.
 
- <img src="README.pictures/image-20220601175306742.png" alt="image-20220601175306742" style="zoom: 50%;" />
+<img src="README.pictures/image-20220601175306742.png" alt="image-20220601175306742" style="zoom: 50%;" />
 
 
 
@@ -137,11 +141,11 @@ Then we test the real case, the bit rate will both increase and decrease
 
 Below picture is the fairness change, the feature is the same as we analyze before: there is imbalance when the bit rate decreases
 
- <img src="README.pictures/image-20220601193543645.png" alt="image-20220601193543645" style="zoom:50%;" />
+<img src="README.pictures/image-20220601193543645.png" alt="image-20220601193543645" style="zoom:50%;" />
 
 Utilization change, the feature is the same as we analyze before: there is utilization increase when the bit rate decreases
 
- <img src="README.pictures/image-20220601193721595.png" alt="image-20220601193721595" style="zoom:50%;" />
+<img src="README.pictures/image-20220601193721595.png" alt="image-20220601193721595" style="zoom:50%;" />
 
 
 
