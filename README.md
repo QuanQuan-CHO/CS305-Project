@@ -55,6 +55,7 @@ There's no good params to improve this because the change of bandwidth defined i
 | α=0.9 | <img src="README.pictures/image-20220531215719677.png" alt="image-20220531215719677" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123337613.png" alt="image-20220601123337613" style="zoom:50%;" /> | <img src="README.pictures/image-20220531223638727.png" alt="image-20220531223638727" style="zoom:50%;" /> |
 
 **Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula$[1]$ is 
+
 $$
 F\left(x_{1}, \ldots x_{n}\right)=\frac{\left(\Sigma_{i=1}^{n} x_{i}\right)^{2}}{n \Sigma_{i=1}^{n} x_{i}^{2}} \in\left[\frac{1}{n}, 1\right]
 $$
@@ -73,7 +74,7 @@ From the pictures, we can see that **sharelink α=0.1** performs the best
 
 1. This may because that the **sharelink** shares the same link, so the difference is less
 
-   <img src="README.pictures/image-20220601125511373.png" alt="image-20220601125511373" style="zoom: 80%;" />
+ <img src="README.pictures/image-20220601125511373.png" alt="image-20220601125511373" style="zoom: 80%;" />
 
 2. And because **α=0.1**, the weight of $T_{current}$ is low, so the change rate of bit rate is low, which makes the fluctuation of network milder, the fairness will more likely to be 1
 
