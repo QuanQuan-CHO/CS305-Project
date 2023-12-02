@@ -54,7 +54,7 @@ There's no good params to improve this because the change of bandwidth defined i
 | α=0.5 | <img src="README.pictures/image-20220531215521181.png" alt="image-20220531215521181" style="zoom:50%;" /> | <img src="README.pictures/image-20220531215845553.png" alt="image-20220531215845553" style="zoom:50%;" /> | <img src="README.pictures/image-20220531220004636.png" alt="image-20220531220004636" style="zoom:50%;" /> |
 | α=0.9 | <img src="README.pictures/image-20220531215719677.png" alt="image-20220531215719677" style="zoom:50%;" /> | <img src="README.pictures/image-20220601123337613.png" alt="image-20220601123337613" style="zoom:50%;" /> | <img src="README.pictures/image-20220531223638727.png" alt="image-20220531223638727" style="zoom:50%;" /> |
 
-**Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula$[1]$ is 
+**Jain's Faireness** index is widely used to value the fairness of specific stream distribution system, whose formula is
 
 $$
 F\left(x_{1}, \ldots x_{n}\right)=\frac{\left(\Sigma_{i=1}^{n} x_{i}\right)^{2}}{n \Sigma_{i=1}^{n} x_{i}^{2}} \in\left[\frac{1}{n}, 1\right]
